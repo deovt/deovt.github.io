@@ -236,7 +236,22 @@
   // ---- download as image ----
   document.getElementById('dlBtn').addEventListener('click',async()=>{
     card.style.transform='';
-    const canvas=await html2canvas(document.body,{backgroundColor:'#05060a',scale:2,useCORS:true});
+    const canvas=await html2canvas(card,{backgroundColor:null,scale:3,useCORS:true,
+      onclone:(doc)=>{
+        const c=doc.getElementById('card');
+        c.style.background='linear-gradient(160deg,#231b52,#0b0b18)';
+        c.style.backdropFilter='none';
+        c.style.webkitBackdropFilter='none';
+        c.style.transform='none';
+        const n=doc.querySelector('.name');
+        n.style.background='none';
+        n.style.color='#ffffff';
+        n.style.webkitTextFillColor='#ffffff';
+        // hide interactive-only buttons in the saved image
+        doc.querySelectorAll('#qrBtn,#dlBtn').forEach(b=>b.closest('.links').style.display='none');
+        doc.querySelector('.cursor').style.display='none';
+        doc.getElementById('type').textContent='< Vibe Coder />';
+      }});
     const a=document.createElement('a');
     a.download='deovt-card.png';
     a.href=canvas.toDataURL('image/png');
