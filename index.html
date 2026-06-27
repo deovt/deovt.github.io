@@ -127,6 +127,18 @@
   @keyframes pulse{50%{opacity:.4;transform:scale(.8)}}
 
   @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+  /* QR modal */
+  .overlay{position:fixed;inset:0;z-index:50;display:none;place-items:center;
+    background:rgba(3,4,8,.7);backdrop-filter:blur(8px)}
+  .overlay.show{display:grid}
+  .qrbox{background:#fff;padding:24px;border-radius:22px;text-align:center;
+    box-shadow:0 30px 80px -20px rgba(0,0,0,.8);animation:pop .25s ease-out}
+  @keyframes pop{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+  #qr{width:220px;height:220px;display:grid;place-items:center}
+  #qr img,#qr canvas{width:220px!important;height:220px!important;border-radius:8px}
+  .qrbox p{margin-top:14px;color:#111;font-family:"JetBrains Mono",monospace;font-size:13px;font-weight:600}
+  .qrbox small{color:#888;font-size:11px}
 </style>
 </head>
 <body>
@@ -147,7 +159,6 @@
           <span class="tag">Vibe&nbsp;Coder</span>
           <span class="tag">UI/UX&nbsp;Designer</span>
           <span class="tag">Developer</span>
-          <span class="tag">AI&nbsp;Builder</span>
         </div>
 
         <div class="links">
@@ -157,11 +168,32 @@
           </a>
         </div>
 
+        <div class="links" style="margin-top:11px">
+          <button class="lnk" id="qrBtn" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3M21 14v.01M17 21h4M21 17v4"/></svg>
+            QR-код
+          </button>
+          <button class="lnk" id="dlBtn" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+            Скачать
+          </button>
+        </div>
+
         <div class="foot"><span class="dot"></span> Открыт к заказам · building cool things</div>
       </div>
     </div>
   </div>
 
+  <div class="overlay" id="overlay">
+    <div class="qrbox">
+      <div id="qr"></div>
+      <p>deovt.github.io</p>
+      <small>наведи камеру телефона</small>
+    </div>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script>
   // typed roles
   const roles=["< Vibe Coder />","UI/UX Designer ✦","Developer { } ","AI-боты и вау-сайты"];
@@ -186,6 +218,30 @@
     card.style.setProperty('--my',y*100+'%');
   });
   scene.addEventListener('mouseleave',()=>card.style.transform='');
+
+  // ---- QR code ----
+  const SITE="https://deovt.github.io";
+  const overlay=document.getElementById('overlay');
+  let qrMade=false;
+  document.getElementById('qrBtn').addEventListener('click',()=>{
+    if(!qrMade){
+      new QRCode(document.getElementById('qr'),{text:SITE,width:220,height:220,
+        colorDark:"#05060a",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.H});
+      qrMade=true;
+    }
+    overlay.classList.add('show');
+  });
+  overlay.addEventListener('click',e=>{if(e.target===overlay)overlay.classList.remove('show')});
+
+  // ---- download as image ----
+  document.getElementById('dlBtn').addEventListener('click',async()=>{
+    card.style.transform='';
+    const canvas=await html2canvas(document.body,{backgroundColor:'#05060a',scale:2,useCORS:true});
+    const a=document.createElement('a');
+    a.download='deovt-card.png';
+    a.href=canvas.toDataURL('image/png');
+    a.click();
+  });
 </script>
 </body>
 </html>
