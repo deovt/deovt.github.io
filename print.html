@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>deovt — печатная визитка</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --c1:#7c5cff; --c2:#16e0c8; --c3:#ff4dd6;
+    --bg:#0b0b18; --text:#eef1ff; --muted:#9aa3c7;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Space Grotesk",sans-serif;background:#1c1c22;
+    display:flex;flex-direction:column;align-items:center;gap:22px;padding:34px 16px;color:#fff}
+  .hint{max-width:560px;text-align:center;color:#cfd3e6;font-size:14px;line-height:1.6}
+  .hint b{color:#fff}
+  .row{display:flex;gap:24px;flex-wrap:wrap;justify-content:center}
+
+  /* визитка: 90×50 мм. 1mm ≈ 3.7795px */
+  .card{
+    width:90mm;height:50mm;border-radius:4mm;overflow:hidden;position:relative;
+    background:linear-gradient(155deg,#231b52 0%,#0b0b18 70%);
+    color:var(--text);display:flex;
+    box-shadow:0 14px 40px rgba(0,0,0,.5);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;
+  }
+  /* неоновые блобы для фактуры */
+  .card .glow{position:absolute;border-radius:50%;filter:blur(16mm);opacity:.55}
+  .g1{width:40mm;height:40mm;background:var(--c1);top:-12mm;left:-8mm}
+  .g2{width:34mm;height:34mm;background:var(--c3);bottom:-14mm;right:24mm}
+  .g3{width:26mm;height:26mm;background:var(--c2);top:6mm;right:-6mm}
+  .top-line{position:absolute;top:0;left:0;right:0;height:1.2mm;
+    background:linear-gradient(90deg,var(--c1),var(--c2),var(--c3))}
+
+  /* ЛИЦО */
+  .front .left{flex:1;padding:6mm 5mm;display:flex;flex-direction:column;justify-content:center;position:relative;z-index:2}
+  .badge{width:11mm;height:11mm;border-radius:3mm;display:grid;place-items:center;
+    font-size:6mm;font-weight:700;color:#fff;margin-bottom:3mm;
+    background:linear-gradient(135deg,var(--c1),var(--c3))}
+  .nm{font-size:8mm;font-weight:700;letter-spacing:-.3mm;line-height:1}
+  .roles{font-family:"JetBrains Mono",monospace;font-size:2.9mm;color:var(--c2);margin-top:2mm}
+  .front .right{width:34mm;display:flex;flex-direction:column;align-items:center;
+    justify-content:center;gap:2mm;padding:4mm;position:relative;z-index:2}
+  .qrwrap{background:#fff;padding:2mm;border-radius:2.5mm}
+  .qrwrap img{display:block;width:24mm;height:24mm}
+  .scan{font-family:"JetBrains Mono",monospace;font-size:2.4mm;color:var(--muted);text-align:center}
+
+  /* ОБОРОТ */
+  .back{align-items:center;justify-content:center;flex-direction:column;gap:3mm;text-align:center}
+  .back .big{font-size:9mm;font-weight:700;position:relative;z-index:2;
+    background:linear-gradient(90deg,#fff,#c9c3ff,var(--c2));
+    -webkit-background-clip:text;background-clip:text;color:transparent}
+  .back .sub{font-family:"JetBrains Mono",monospace;font-size:3mm;color:var(--text);position:relative;z-index:2}
+  .back .url{font-family:"JetBrains Mono",monospace;font-size:3.2mm;color:var(--c2);
+    position:relative;z-index:2;margin-top:1mm}
+  .tagline{font-size:2.8mm;color:var(--muted);position:relative;z-index:2}
+
+  /* кнопка печати */
+  .printbtn{padding:12px 26px;border:none;border-radius:12px;cursor:pointer;font-weight:700;
+    font-size:15px;color:#fff;background:linear-gradient(135deg,var(--c1),var(--c3));
+    box-shadow:0 10px 24px -8px rgba(255,77,214,.6)}
+
+  @media print{
+    @page{size:90mm 50mm;margin:0}
+    body{background:#fff;padding:0;gap:0;display:block}
+    .hint,.printbtn{display:none}
+    .row{display:block}
+    .card{box-shadow:none;border-radius:0;width:90mm;height:50mm;
+      page-break-after:always;break-after:page}
+    .card:last-child{page-break-after:auto}
+  }
+</style>
+</head>
+<body>
+  <p class="hint">
+    🖨️ <b>Как напечатать:</b> нажми кнопку ниже → в окне печати выбери «<b>Сохранить как PDF</b>», поля «<b>Нет</b>», масштаб «<b>100%</b>».
+    Получишь 2 страницы (лицо + оборот) ровно 90×50&nbsp;мм. Отнеси PDF в любую типографию — скажи «визитки 90×50, двусторонние».
+  </p>
+  <button class="printbtn" onclick="window.print()">🖨️ Печать / Сохранить PDF</button>
+
+  <div class="row">
+    <!-- ЛИЦО -->
+    <div class="card front">
+      <div class="top-line"></div>
+      <div class="glow g1"></div><div class="glow g2"></div><div class="glow g3"></div>
+      <div class="left">
+        <div class="badge">D</div>
+        <div class="nm">@deovt</div>
+        <div class="roles">Vibe Coder · UI/UX · Dev</div>
+      </div>
+      <div class="right">
+        <div class="qrwrap">
+          <img alt="QR на deovt.github.io"
+            src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&margin=0&data=https://deovt.github.io">
+        </div>
+        <div class="scan">scan me →<br>deovt.github.io</div>
+      </div>
+    </div>
+
+    <!-- ОБОРОТ -->
+    <div class="card back">
+      <div class="top-line"></div>
+      <div class="glow g1"></div><div class="glow g2"></div><div class="glow g3"></div>
+      <div class="big">@deovt</div>
+      <div class="sub">Vibe Coder · UI/UX Designer · Developer</div>
+      <div class="url">↗ deovt.github.io</div>
+      <div class="tagline">сайты · приложения · дизайн под ключ</div>
+    </div>
+  </div>
+</body>
+</html>
